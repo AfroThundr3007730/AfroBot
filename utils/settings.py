@@ -7,7 +7,7 @@ class Settings(object):
     _config_location = 'config.json'
 
     def __init__(self):
-        if os.path.exists(self._location):
+        if os.path.exists(self._config_location):
             self.__dict__ = Box.from_json(filename=self._config_location,
                                           box_it_up=True)
         else:
