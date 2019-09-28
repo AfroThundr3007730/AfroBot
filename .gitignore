@@ -1,5 +1,7 @@
 .vscode/
 .dev/
 .prod/
+**/__pycache__/
 config.json
 tags
+*.bak
