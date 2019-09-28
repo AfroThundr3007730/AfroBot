@@ -1,19 +1,21 @@
-import json
+import io
 import os
 
+from box import Box
 
-class Settings:
+class Settings(object):
     _config_location = 'config.json'
 
     def __init__(self):
-        if os.path.exists(self._config_location):
-            self.__dict__ = json.load(open(self._config_location, 'r'))
+        if os.path.exists(self._location):
+            self.__dict__ = Box.from_json(filename=self._config_location,
+                                          box_it_up=True)
         else:
-            self.__dict__ = {}
+            self.__dict__ = Box()
 
     def __enter__(self):
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        json.dump(self.__dict__, open(self._config_location, 'w',
-                                      sort_keys=True, indent=4))
+    def __exit__(self, exc_type, exc_value, tb):
+        self.__dict__.to_json(filename=self._config_location,
+                              sort_keys=True, indent=4)
