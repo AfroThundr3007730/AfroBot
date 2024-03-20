@@ -1,48 +1,62 @@
 #!/usr/bin/python
 import os
-import sys
 
-from jobs.acc_stats import ACCStats
+from utils.loader import TaskLoader
+from utils.logger import Logger
 from utils.settings import Settings
 
-__author__  = 'AfroThundr'
-__license__ = "GNU GPLv3"
-__title__   = 'AfroBot'
-__version__ = "0.1.0"
-__website__ = 'https://github.com/AfroThundr3007730/AfroBot'
+# To be replaced with dynamic plugin import
+from jobs.acc_stats import ACCStats
+
+__title__ = 'AfroBot Wikibot'
+__version__ = '0.1.0'
+__author__ = 'AfroThundr'
+__license__ = 'GNU GPLv3'
+__source__ = 'https://github.com/AfroThundr3007730/AfroBot'
+
 
 class AfroBot(object):
-    _id = 'afrobot'
+    id = 'afrobot'
+    env = os.environ['BOT_MODE'] if 'BOT_MODE' in os.environ else 'dev'
+    L = Logger(env)
 
     def __init__(self):
-        # Function config
         with Settings() as self.settings:
             if not self.settings:
+                L.logwarn('No settings detected, populating defaults.')
                 self.settings = self._default
-        return
+            self.settings.meta = self._meta
+        L.loginfo('Settings loaded successfully.')
 
-    def __info__(self):
-        # Return bot info
-        return
+    def _info(self):
+        # Put some proper info here
+        print('%s' (_meta))
 
-    def run(self, *args, **kwargs):
+    def runs(self, *args, **kwargs):
         # The magic
-        return
+        L.loginfo('Starting %s (version %s).' % (__title__, __version__))
+        L.loginfo('Loading all task plugins.')
+        TaskLoader.loadall()
+
+    def run(self):
+        print('hello world')
+
+    _meta = {
+        'author':  __author__,
+        'botname': __title__,
+        'license': __license__,
+        'source':  __source__,
+        'version': __version__
+    }
 
     _default = {
-        '_schema_version': '1',
-        'meta': {
-            'author': str(__author__),
-            'license': str(__license__),
-            'name': str(__title__),
-            'source': str(__website__),
-            'version': str(__version__)
-        },
+        '_schema_version': __version__,
+        'meta': _meta,
         'sites': {
             'enwiki': {
                 'name': 'English Wikipedia',
                 'pass': 'CHANGEME',
-                'uri': 'https://en.wikipedia.org/mediawiki/api.php',
+                'uri':  'https://en.wikipedia.org/mediawiki/api.php',
                 'user': 'MyBotUser'
             }
         },
@@ -50,9 +64,5 @@ class AfroBot(object):
     }
 
 
-def main():
-    return
-
-
 if __name__ == '__main__':
-    main()
+    AfroBot().run()
